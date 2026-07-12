@@ -47,7 +47,7 @@ sudo chmod 666 /var/run/docker.sock
 
 ```bash
 cd ~
-git clone [https://github.com/The-OpenROAD-Project/OpenLane.git](https://github.com/The-OpenROAD-Project/OpenLane.git)
+git clone https://github.com/The-OpenROAD-Project/OpenLane.git
 cd OpenLane
 make pull-openlane
 
