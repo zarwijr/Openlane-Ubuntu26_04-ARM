@@ -179,21 +179,21 @@ sudo apt clean
 Nếu một ngày server chết hoặc mất mạng, bạn vẫn có thể bung cỗ máy OpenLane ra chạy bình thường bằng các bản backup dưới đây.
 
 ### Phương án 1: Đóng gói toàn bộ mã nguồn và Docker Image
-
 Thực hiện các lệnh này khi máy vẫn đang có mạng để tạo bản backup.
 
 ```bash
 # 1. Xem tên chính xác của Image OpenLane đang chạy (Ghi nhớ mục REPOSITORY và TAG)
 docker images
 
-# 2. Đóng hộp Docker Image thành file nén .tar (thay tên image tương ứng nếu khác)
+# 2. Đóng hộp Docker Image thành file nén .tar
 docker save ghcr.io/the-openroad-project/openlane:ff5509f65b17bfa4068d5336495ab1718987ff69-arm64v8 -o ~/openlane_docker_backup.tar
 
 # 3. Cấp lại quyền sở hữu để tránh lỗi Permission Denied khi nén các file báo cáo ngầm
 sudo chown -R $USER:$USER ~/OpenLane ~/.ciel
 
-# 4. Nén thư mục mã nguồn và toàn bộ các thư viện PDK thành một cục duy nhất
-tar -czvf ~/openlane_source_pdk_backup.tar.gz ~/OpenLane ~/.ciel
+# 4. Di chuyển vào thư mục Home và tiến hành nén thư mục (Tránh lỗi lồng đường dẫn)
+cd ~
+tar -czvf openlane_source_pdk_backup.tar.gz OpenLane .ciel
 
 ```
 
@@ -207,8 +207,9 @@ Copy 2 file backup ở trên vào máy ảo mới và thực hiện lệnh bung 
 # 1. Nạp Docker Image trực tiếp từ file tar không cần mạng
 docker load -i ~/openlane_docker_backup.tar
 
-# 2. Giải nén mã nguồn OpenLane và thư viện PDK thẳng vào thư mục Home
-tar -xzvf ~/openlane_source_pdk_backup.tar.gz -C ~/
+# 2. Di chuyển vào thư mục Home và bung nén dữ liệu vào đúng vị trí
+cd ~
+tar -xzvf openlane_source_pdk_backup.tar.gz
 
 ```
 
