@@ -1,17 +1,30 @@
 # Openlane-Ubuntu_26.04
 ---
+Dưới đây là bản **Cẩm Nang Tối Thượng (README.md)** đã được mình tinh chỉnh lại cấu trúc, cập nhật bản vá lỗi phân quyền (chown) vào Phần 3, dọn dẹp sạch sẽ tàn dư `~/.volare` cũ và đưa phần Phụ lục vào đúng chuẩn Markdown để hiển thị tuyệt đẹp trên GitHub.
 
+Bạn chỉ cần nhấn nút Copy ở góc phải khối code bên dưới và dán thẳng vào kho lưu trữ (Repository) của mình là xong!
+
+---
+
+```markdown
 # 📘 CẨM NANG TỐI THƯỢNG: CÀI ĐẶT, GỠ BỎ & SAO LƯU OPENLANE TRÊN UBUNTU 26.04 (ARM64)
 
-> **Bí quyết cốt lõi:** Tuyệt đối không dùng `pip` để cài đặt trực tiếp OpenLane nhằm tránh lỗi biên dịch C++ (`libparse`/`klayout`) trên chip ARM. Sử dụng 100% sức mạnh của Docker để môi trường luôn sạch và mượt mà.
+> **💡 Bí quyết cốt lõi:** Tuyệt đối **không dùng `pip`** để cài đặt trực tiếp OpenLane nhằm tránh lỗi biên dịch C++ (`libparse`/`klayout`) trên chip ARM. Sử dụng 100% sức mạnh của Docker để môi trường luôn sạch, mượt mà và dễ kiểm soát.
+
+Tài liệu này cung cấp toàn bộ vòng đời sử dụng OpenLane trên môi trường Ubuntu 26.04 (đặc biệt tối ưu cho máy ảo trên Apple Silicon/ARM64). Từ việc xây mới, đập đi, cho đến sao lưu phòng hờ đứt cáp mạng.
+
+## 📑 Mục lục
+- [Phần 1: Hướng Dẫn Cài Đặt OpenLane (Docker) Siêu Sạch](#phần-1--hướng-dẫn-cài-đặt-openlane-docker-siêu-sạch)
+- [Phần 2: Hướng Dẫn "Xóa Sổ" OpenLane & Docker](#phần-2--hướng-dẫn-xóa-sổ-openlane--docker)
+- [Phần 3: Chiến Lược Sao Lưu & Cài Đặt Offline](#phần-3-️-chiến-lược-sao-lưu-và-cài-đặt-offline-chống-đứt-mạng)
+- [Phụ lục: Dọn Dẹp File Sao Lưu](#-phụ-lục-xóa-các-file-sao-lưu-offline-backup)
 
 ---
 
 ## PHẦN 1: 🚀 HƯỚNG DẪN CÀI ĐẶT OPENLANE (DOCKER) SIÊU SẠCH
 
 ### Giai đoạn 1: Chuẩn bị Hệ thống Cơ bản
-
-Dọn dẹp và cài đặt các công cụ nền tảng cần thiết nhất.
+Dọn dẹp và cài đặt các công cụ nền tảng cần thiết nhất, bỏ qua các thư viện đồ họa rườm rà.
 
 ```bash
 # 1. Cập nhật toàn bộ danh sách phần mềm hệ thống
@@ -59,7 +72,7 @@ Sau khi Docker đã thông suốt, tiến hành kéo mã nguồn và công cụ.
 ```bash
 # 1. Quay về thư mục gốc và tải mã nguồn OpenLane từ GitHub
 cd ~
-git clone https://github.com/The-OpenROAD-Project/OpenLane.git
+git clone [https://github.com/The-OpenROAD-Project/OpenLane.git](https://github.com/The-OpenROAD-Project/OpenLane.git)
 
 # 2. Di chuyển vào thư mục dự án
 cd OpenLane
@@ -71,7 +84,7 @@ make pull-openlane
 
 ### Giai đoạn 4: Cấp quyền, Cài PDK và Chạy thử
 
-Ngăn chặn lỗi "Permission denied" khi tải thư viện lõi, sau đó nạp đạn và chạy thử.
+Ngăn chặn lỗi `Permission denied` khi tải thư viện lõi, sau đó nạp đạn và chạy thử.
 
 ```bash
 # 1. Tạo trước thư mục PDK và cấp quyền để user thoải mái tải file mà không bị chặn
@@ -86,9 +99,9 @@ make test
 
 ```
 
-*Chỉ cần đợi hệ thống chạy qua các bước Tổng hợp, Đi dây... Nếu dòng cuối cùng hiện chữ **`Successful!`**, cỗ máy thiết kế vi mạch của bạn đã sẵn sàng.*
+> **🎉 Thành quả:** Chỉ cần đợi hệ thống chạy qua các bước Tổng hợp, Đi dây... Nếu dòng cuối cùng hiện chữ **`Successful!`**, cỗ máy thiết kế vi mạch của bạn đã sẵn sàng.
 
-### 💡 Mẹo Hệ thống (Nên dùng)
+### 💡 Mẹo Hệ thống (Khuyên dùng)
 
 Tắt chế độ ngủ để tránh máy ảo tự khóa màn hình và ngắt kết nối khi đang chạy render chip.
 
@@ -115,8 +128,8 @@ Dùng khi bạn chỉ muốn giải phóng không gian (khoảng vài GB) nhưng
 # 1. Xóa toàn bộ mã nguồn và thư mục chạy của OpenLane
 rm -rf ~/OpenLane
 
-# 2. Xóa sạch các thư mục chứa PDK SkyWater 130nm
-rm -rf ~/.volare ~/.ciel
+# 2. Xóa sạch thư mục chứa PDK SkyWater 130nm (Công cụ Ciel)
+rm -rf ~/.ciel
 
 # 3. Dọn dẹp bộ nhớ đệm, các container và image không dùng đến của Docker
 sudo docker system prune -a --volumes -f
@@ -178,12 +191,15 @@ docker images
 # 2. Đóng hộp Docker Image thành file nén .tar (thay tên image tương ứng nếu khác)
 docker save ghcr.io/the-openroad-project/openlane:ff5509f65b17bfa4068d5336495ab1718987ff69-arm64v8 -o ~/openlane_docker_backup.tar
 
-# 3. Nén thư mục mã nguồn và toàn bộ các thư viện PDK
-tar -czvf ~/openlane_source_pdk_backup.tar.gz ~/OpenLane ~/.volare ~/.ciel
+# 3. Cấp lại quyền sở hữu để tránh lỗi Permission Denied khi nén các file báo cáo ngầm
+sudo chown -R $USER:$USER ~/OpenLane ~/.ciel
+
+# 4. Nén thư mục mã nguồn và toàn bộ các thư viện PDK thành một cục duy nhất
+tar -czvf ~/openlane_source_pdk_backup.tar.gz ~/OpenLane ~/.ciel
 
 ```
 
-*Kết quả:* Có 2 file backup cực kỳ quan trọng (`.tar` và `.tar.gz`) trong thư mục Home. Hãy copy chúng ra USB hoặc Cloud.
+> **Lưu ý:** Bạn sẽ thu được 2 file backup cực kỳ quan trọng (`.tar` và `.tar.gz`) trong thư mục Home. Hãy copy chúng ra USB hoặc lưu trữ trên Cloud.
 
 ### Phương án 2: Khôi phục Offline (Khi mất mạng)
 
@@ -198,9 +214,13 @@ tar -xzvf ~/openlane_source_pdk_backup.tar.gz -C ~/
 
 ```
 
-🧹 Phụ lục: Xóa các file sao lưu Offline (Backup)
+---
+
+## 🧹 Phụ lục: Xóa các file sao lưu Offline (Backup)
+
 Dùng khi bạn không còn nhu cầu lưu trữ dự phòng và muốn lấy lại hoàn toàn dung lượng ổ cứng.
-Bash
+
+```bash
 # Xóa file sao lưu của Docker Image (.tar)
 rm -f ~/openlane_docker_backup.tar
 
@@ -209,4 +229,11 @@ rm -f ~/openlane_source_pdk_backup.tar.gz
 
 # (Tùy chọn) Lệnh gộp xóa cả 2 file cùng lúc cho nhanh:
 rm -f ~/openlane_docker_backup.tar ~/openlane_source_pdk_backup.tar.gz
-Chỉ cần gõ lệnh rm -f như trên, hai "cục tạ" backup này sẽ biến mất không dấu vết ngay lập tức! Bạn có thể yên tâm dùng Cẩm nang này để kiểm soát từng KB dữ liệu sinh ra trên máy ảo của mình rồi nhé.
+
+```
+
+*Chỉ cần gõ lệnh `rm -f` như trên, hai "cục tạ" backup này sẽ biến mất không dấu vết ngay lập tức! Bạn hoàn toàn làm chủ từng KB dữ liệu trên máy ảo của mình.*
+
+```
+
+```
