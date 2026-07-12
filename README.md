@@ -1,12 +1,10 @@
-# Openlane-Ubuntu_26.04
+Bản cập nhật này đã vá lỗ hổng cấp quyền (Permission denied) ở thư mục PDK và bổ sung luôn thư mục `.ciel` vào danh sách dọn dẹp/sao lưu. Đây chính thức là phiên bản "chống đạn" hoàn hảo nhất cho cỗ máy của bạn.
 
-Dưới đây là **"Cheat Sheet Tối Thượng"** được gộp lại hoàn chỉnh, giúp bạn làm chủ 100% vòng đời của OpenLane trên máy ảo Ubuntu 26.04 (kiến trúc ARM64).
-
-Tài liệu này được thiết kế để bạn có thể lưu lại thành một file văn bản (ví dụ: `cam_nang_openlane.txt`) và tra cứu bất cứ khi nào cần "xây mới" hay "đập đi".
+Bạn hãy lưu lại ngay bản cập nhật mới nhất này nhé:
 
 ---
 
-# 📘 CẨM NANG TỐI THƯỢNG: CÀI ĐẶT & GỠ BỎ OPENLANE TRÊN UBUNTU 26.04 (ARM64)
+# 📘 CẨM NANG TỐI THƯỢNG: CÀI ĐẶT, GỠ BỎ & SAO LƯU OPENLANE TRÊN UBUNTU 26.04 (ARM64)
 
 > **Bí quyết cốt lõi:** Tuyệt đối không dùng `pip` để cài đặt trực tiếp OpenLane nhằm tránh lỗi biên dịch C++ (`libparse`/`klayout`) trên chip ARM. Sử dụng 100% sức mạnh của Docker để môi trường luôn sạch và mượt mà.
 
@@ -16,7 +14,7 @@ Tài liệu này được thiết kế để bạn có thể lưu lại thành m
 
 ### Giai đoạn 1: Chuẩn bị Hệ thống Cơ bản
 
-Dọn dẹp và cài đặt các công cụ nền tảng cần thiết nhất, bỏ qua các thư viện đồ họa rườm rà.
+Dọn dẹp và cài đặt các công cụ nền tảng cần thiết nhất.
 
 ```bash
 # 1. Cập nhật toàn bộ danh sách phần mềm hệ thống
@@ -29,7 +27,7 @@ sudo apt install -y git make build-essential curl wget nano util-linux-extra
 
 ### Giai đoạn 2: Cài đặt và "Đặc trị" lỗi Docker
 
-Ubuntu 26.04 thường gặp xung đột file giao tiếp (`docker.sock`) khiến Docker chạy ngầm nhưng bị lỗi kết nối. Các lệnh dưới đây sẽ dọn dẹp và ép Docker chạy chuẩn xác.
+Ubuntu 26.04 thường gặp xung đột file giao tiếp (`docker.sock`). Các lệnh dưới đây sẽ dọn dẹp và ép Docker chạy chuẩn xác.
 
 ```bash
 # 1. Cài đặt Docker Engine
@@ -69,28 +67,33 @@ git clone https://github.com/The-OpenROAD-Project/OpenLane.git
 # 2. Di chuyển vào thư mục dự án
 cd OpenLane
 
-# 3. Ép Docker tải bản Image chứa sẵn mọi công cụ (KLayout, Yosys, OpenROAD...)
+# 3. Ép Docker tải bản Image chứa sẵn mọi công cụ EDA (KLayout, Yosys, OpenROAD...)
 make pull-openlane
 
 ```
 
-*(Lưu ý: Quá trình tải `pull-openlane` sẽ mất vài phút tùy tốc độ mạng do bộ công cụ nặng khoảng 2GB).*
+### Giai đoạn 4: Cấp quyền, Cài PDK và Chạy thử
 
-### Giai đoạn 4: Chạy thử nghiệm và Tự động lấy PDK
-
-Bạn không cần tự cài thư viện vật lý SkyWater 130nm (`volare`). OpenLane sẽ tự động phát hiện và tải về.
+Ngăn chặn lỗi "Permission denied" khi tải thư viện lõi, sau đó nạp đạn và chạy thử.
 
 ```bash
-# Chạy bài test thiết kế mạch mặc định (spm - Multiplier)
+# 1. Tạo trước thư mục PDK và cấp quyền để user thoải mái tải file mà không bị chặn
+mkdir -p ~/.ciel
+sudo chown -R $USER:$USER ~/.ciel
+
+# 2. Tự động tải thư viện công nghệ vật lý SkyWater 130nm
+make pdk
+
+# 3. Chạy bài test thiết kế mạch mặc định (spm - Multiplier)
 make test
 
 ```
 
-*Chỉ cần đợi hệ thống chạy qua các bước Tổng hợp (Synthesis), Đi dây (Routing)... Nếu dòng cuối cùng hiện chữ **`Successful!`**, cỗ máy thiết kế vi mạch của bạn đã sẵn sàng.*
+*Chỉ cần đợi hệ thống chạy qua các bước Tổng hợp, Đi dây... Nếu dòng cuối cùng hiện chữ **`Successful!`**, cỗ máy thiết kế vi mạch của bạn đã sẵn sàng.*
 
 ### 💡 Mẹo Hệ thống (Nên dùng)
 
-Tắt chế độ ngủ để tránh máy ảo tự khóa màn hình và ngắt kết nối khi đang render chip tốn thời gian:
+Tắt chế độ ngủ để tránh máy ảo tự khóa màn hình và ngắt kết nối khi đang chạy render chip.
 
 ```bash
 # Tắt khóa màn hình khi Sleep/Suspend
@@ -103,40 +106,38 @@ gsettings set org.gnome.desktop.screensaver lock-enabled false
 
 ---
 
----
-
 ## PHẦN 2: 🧹 HƯỚNG DẪN "XÓA SỔ" OPENLANE & DOCKER
 
 Quá trình gỡ bỏ được chia thành 3 cấp độ tùy thuộc vào mục đích dọn dẹp của bạn.
 
 ### Cấp độ 1: Xóa dự án OpenLane và Thư viện lõi (PDK)
 
-Dùng khi bạn chỉ muốn xóa OpenLane để giải phóng vài GB ổ cứng, nhưng **vẫn muốn giữ lại Docker** cho các việc khác.
+Dùng khi bạn chỉ muốn giải phóng không gian (khoảng vài GB) nhưng **vẫn muốn giữ lại Docker** cho các việc khác.
 
 ```bash
 # 1. Xóa toàn bộ mã nguồn và thư mục chạy của OpenLane
 rm -rf ~/OpenLane
 
-# 2. Xóa thư viện vật lý SkyWater 130nm (giải phóng rất nhiều dung lượng)
-rm -rf ~/.volare
+# 2. Xóa sạch các thư mục chứa PDK SkyWater 130nm
+rm -rf ~/.volare ~/.ciel
 
 # 3. Dọn dẹp bộ nhớ đệm, các container và image không dùng đến của Docker
 sudo docker system prune -a --volumes -f
 
 ```
 
-### Cấp độ 2: Gỡ bỏ tận gốc Docker (Đã fix lỗi gói cài đặt)
+### Cấp độ 2: Gỡ bỏ tận gốc Docker
 
-Dùng khi bạn muốn gỡ hoàn toàn Docker và mọi cấu hình liên quan ra khỏi hệ thống Ubuntu.
+Dùng khi bạn muốn gỡ hoàn toàn Docker và mọi cấu hình liên quan ra khỏi hệ thống.
 
 ```bash
 # 1. Dừng hoàn toàn các dịch vụ Docker đang chạy ngầm
 sudo systemctl stop docker docker.socket
 
-# 2. Gỡ cài đặt phần mềm lõi của Docker (chuẩn tên gói cho Ubuntu 26.04)
+# 2. Gỡ cài đặt phần mềm lõi của Docker
 sudo apt purge -y docker.io containerd runc
 
-# 3. Quét và dọn sạch các tệp tin phụ thuộc (rác hệ thống) tự sinh ra
+# 3. Quét và dọn sạch các tệp tin phụ thuộc tự sinh ra
 sudo apt autoremove -y
 sudo apt clean
 
@@ -145,21 +146,57 @@ sudo rm -rf /var/lib/docker /etc/docker
 sudo rm -rf /run/docker.sock /var/run/docker.sock /var/run/docker.pid
 
 # 5. Xóa nhóm phân quyền docker 
-# (Lưu ý: Nếu hệ thống báo "group 'docker' does not exist" thì càng tốt, nó đã được tự động dọn).
 sudo groupdel docker
 
 ```
 
 ### Cấp độ 3: Trả hệ điều hành về "nguyên thủy" (Tùy chọn)
 
-Dùng khi bạn muốn gỡ luôn các công cụ lập trình cơ bản nền tảng để máy ảo hoàn toàn trống trơn.
+Dùng khi bạn muốn gỡ luôn các công cụ nền tảng để máy ảo hoàn toàn trống trơn.
 
 ```bash
-# 1. Gỡ các công cụ lập trình, tải file và biên dịch mã nguồn
+# 1. Gỡ các công cụ hệ thống cơ bản
 sudo apt purge -y git make build-essential curl wget util-linux-extra
 
 # 2. Dọn rác lần cuối để trả lại không gian đĩa
 sudo apt autoremove -y
 sudo apt clean
+
+```
+
+---
+
+## PHẦN 3: 🛡️ CHIẾN LƯỢC SAO LƯU VÀ CÀI ĐẶT OFFLINE (Chống đứt mạng)
+
+Nếu một ngày server chết hoặc mất mạng, bạn vẫn có thể bung cỗ máy OpenLane ra chạy bình thường bằng các bản backup dưới đây.
+
+### Phương án 1: Đóng gói toàn bộ mã nguồn và Docker Image
+
+Thực hiện các lệnh này khi máy vẫn đang có mạng để tạo bản backup.
+
+```bash
+# 1. Xem tên chính xác của Image OpenLane đang chạy (Ghi nhớ mục REPOSITORY và TAG)
+docker images
+
+# 2. Đóng hộp Docker Image thành file nén .tar (thay tên image tương ứng nếu khác)
+docker save ghcr.io/the-openroad-project/openlane:ff5509f65b17bfa4068d5336495ab1718987ff69-arm64v8 -o ~/openlane_docker_backup.tar
+
+# 3. Nén thư mục mã nguồn và toàn bộ các thư viện PDK
+tar -czvf ~/openlane_source_pdk_backup.tar.gz ~/OpenLane ~/.volare ~/.ciel
+
+```
+
+*Kết quả:* Có 2 file backup cực kỳ quan trọng (`.tar` và `.tar.gz`) trong thư mục Home. Hãy copy chúng ra USB hoặc Cloud.
+
+### Phương án 2: Khôi phục Offline (Khi mất mạng)
+
+Copy 2 file backup ở trên vào máy ảo mới và thực hiện lệnh bung nén:
+
+```bash
+# 1. Nạp Docker Image trực tiếp từ file tar không cần mạng
+docker load -i ~/openlane_docker_backup.tar
+
+# 2. Giải nén mã nguồn OpenLane và thư viện PDK thẳng vào thư mục Home
+tar -xzvf ~/openlane_source_pdk_backup.tar.gz -C ~/
 
 ```
