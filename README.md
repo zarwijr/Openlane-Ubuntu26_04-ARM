@@ -6,6 +6,12 @@ Bạn chỉ cần nhấn nút Copy ở góc phải khối code bên dưới và 
 
 ---
 
+Bạn nói rất chuẩn, phần đầu và phần `git clone` ở Giai đoạn 3 bị dính một lỗi định dạng nhỏ (đường link GitHub bị chèn thêm ngoặc vuông `[...]` làm hỏng lệnh copy của Bash), ngoài ra các dấu backtick (```) bao quanh bị thừa khiến file hiển thị không được đẹp.
+
+Mình đã gọt giũa lại toàn bộ, sửa lỗi link, và căn chỉnh lại các khoảng trắng để file **README.md** này đạt độ hoàn hảo 100% khi đưa lên GitHub.
+
+Bạn chỉ cần bấm nút **Copy** ở góc trên cùng bên phải của khung đen dưới đây và dán thẳng vào file trên GitHub nhé:
+
 ```markdown
 # 📘 CẨM NANG TỐI THƯỢNG: CÀI ĐẶT, GỠ BỎ & SAO LƯU OPENLANE TRÊN UBUNTU 26.04 (ARM64)
 
@@ -72,7 +78,7 @@ Sau khi Docker đã thông suốt, tiến hành kéo mã nguồn và công cụ.
 ```bash
 # 1. Quay về thư mục gốc và tải mã nguồn OpenLane từ GitHub
 cd ~
-git clone [https://github.com/The-OpenROAD-Project/OpenLane.git](https://github.com/The-OpenROAD-Project/OpenLane.git)
+git clone https://github.com/The-OpenROAD-Project/OpenLane.git
 
 # 2. Di chuyển vào thư mục dự án
 cd OpenLane
