@@ -1,7 +1,4 @@
-Bản cập nhật này đã vá lỗ hổng cấp quyền (Permission denied) ở thư mục PDK và bổ sung luôn thư mục `.ciel` vào danh sách dọn dẹp/sao lưu. Đây chính thức là phiên bản "chống đạn" hoàn hảo nhất cho cỗ máy của bạn.
-
-Bạn hãy lưu lại ngay bản cập nhật mới nhất này nhé:
-
+# Openlane-Ubuntu_26.04
 ---
 
 # 📘 CẨM NANG TỐI THƯỢNG: CÀI ĐẶT, GỠ BỎ & SAO LƯU OPENLANE TRÊN UBUNTU 26.04 (ARM64)
@@ -200,3 +197,16 @@ docker load -i ~/openlane_docker_backup.tar
 tar -xzvf ~/openlane_source_pdk_backup.tar.gz -C ~/
 
 ```
+
+🧹 Phụ lục: Xóa các file sao lưu Offline (Backup)
+Dùng khi bạn không còn nhu cầu lưu trữ dự phòng và muốn lấy lại hoàn toàn dung lượng ổ cứng.
+Bash
+# Xóa file sao lưu của Docker Image (.tar)
+rm -f ~/openlane_docker_backup.tar
+
+# Xóa file sao lưu của mã nguồn và thư viện PDK (.tar.gz)
+rm -f ~/openlane_source_pdk_backup.tar.gz
+
+# (Tùy chọn) Lệnh gộp xóa cả 2 file cùng lúc cho nhanh:
+rm -f ~/openlane_docker_backup.tar ~/openlane_source_pdk_backup.tar.gz
+Chỉ cần gõ lệnh rm -f như trên, hai "cục tạ" backup này sẽ biến mất không dấu vết ngay lập tức! Bạn có thể yên tâm dùng Cẩm nang này để kiểm soát từng KB dữ liệu sinh ra trên máy ảo của mình rồi nhé.
